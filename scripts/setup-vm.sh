@@ -8,5 +8,5 @@ curl -fsSL "https://storebits.docker.com/ee/ubuntu/${docker_ee_subscription_id}/
 
 sudo apt-get update
 sudo apt-get install -y docker-ee
-sudo adduser admin docker
+sudo adduser ubuntu docker
 
