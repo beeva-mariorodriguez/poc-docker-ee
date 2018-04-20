@@ -6,7 +6,8 @@ resource "aws_instance" "manager" {
 
   vpc_security_group_ids = [
     "${aws_security_group.allow_ssh.id}",
-    "${aws_vpc.ee.default_security_group_id}",
+    "${aws_security_group.manager.id}",
+    "${aws_vpc.ee.default_security_group_id}"
   ]
 
   tags {
@@ -29,7 +30,7 @@ resource "aws_instance" "manager" {
       "export DOCKER_EE_CHANNEL=${var.docker_ee_channel}",
       "export UCP_ADMIN_USER=admin",
       "export UCP_ADMIN_PASSWORD=${var.ucp_admin_password}",
-      "export UCP_HOSTNAMES=${var.ucp_hostnames}",
+      "export UCP_HOSTNAMES=${aws_elb.manager.dns_name}",
       "chmod +x /tmp/setup-vm.sh",
       "/tmp/setup-vm.sh ucpmanager",
     ]
@@ -38,5 +39,27 @@ resource "aws_instance" "manager" {
   connection {
     type = "ssh"
     user = "ubuntu"
+  }
+}
+
+resource "aws_elb_attachment" "ucp" {
+  elb      = "${aws_elb.manager.id}"
+  instance = "${aws_instance.manager.id}"
+}
+
+resource "aws_security_group" "manager" {
+  name   = "manager"
+  vpc_id = "${aws_vpc.ee.id}"
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    security_groups = ["${aws_security_group.lb-manager.id}"]
+  }
+  ingress {
+    from_port = 6443
+    to_port = 6443
+    protocol = "tcp"
+    security_groups = ["${aws_security_group.lb-manager.id}"]
   }
 }

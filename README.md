@@ -11,14 +11,11 @@ https://goto.docker.com/rs/929-FJL-178/images/Docker-EE-Beta-Exercises.pdf
 
 ## installation
 1. ``terraform apply``
-2. tunnel to manager
+2. get manager URL
     ```bash
-    ssh -L 127.0.0.1:6443:127.0.0.1:6443 -L 127.0.0.1:8443:127.0.0.1:443 \
-        ubuntu@$(terraform output manager)
+    terraform output manager-url
     ```
-
-    web interface is at https://127.0.0.1:8443
-3. add nodes/managers from the UCP interface
+3. add nodes from the UCP interface
     ```bash
     for n in $(terraform output -json nodes | jq -r '.value | .[]')
     do

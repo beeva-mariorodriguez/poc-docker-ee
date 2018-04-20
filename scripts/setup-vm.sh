@@ -22,6 +22,7 @@ function ucp_manager {
             install \
             --host-address "$(curl http://instance-data/latest/meta-data/local-ipv4)" \
             --admin-password "${UCP_ADMIN_PASSWORD}" \
+            --san "${UCP_HOSTNAMES}" \
             --license "$(cat /tmp/docker_subscription.lic)"
 }
 
