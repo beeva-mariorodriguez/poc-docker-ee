@@ -3,7 +3,7 @@ resource "aws_instance" "node" {
   instance_type = "t2.medium"
   subnet_id     = "${aws_subnet.ucp.id}"
   key_name      = "${var.keyname}"
-  count         = 5
+  count         = 3
 
   vpc_security_group_ids = [
     "${aws_security_group.allow_ssh.id}",
