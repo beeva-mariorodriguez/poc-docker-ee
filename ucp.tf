@@ -7,7 +7,7 @@ resource "aws_instance" "manager" {
   vpc_security_group_ids = [
     "${aws_security_group.allow_ssh.id}",
     "${aws_security_group.manager.id}",
-    "${aws_vpc.ee.default_security_group_id}"
+    "${aws_vpc.ee.default_security_group_id}",
   ]
 
   tags {
@@ -50,16 +50,18 @@ resource "aws_elb_attachment" "ucp" {
 resource "aws_security_group" "manager" {
   name   = "manager"
   vpc_id = "${aws_vpc.ee.id}"
+
   ingress {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = ["${aws_security_group.lb-manager.id}"]
   }
+
   ingress {
-    from_port = 6443
-    to_port = 6443
-    protocol = "tcp"
+    from_port       = 6443
+    to_port         = 6443
+    protocol        = "tcp"
     security_groups = ["${aws_security_group.lb-manager.id}"]
   }
 }
